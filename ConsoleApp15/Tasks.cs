@@ -4,17 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp15
+namespace Arrays_Homework
 {
     static class Tasks
     {
+
         public static void Task1(int [] myArray)
         {
             PrintArray(myArray);
             int min = FindMinElement(myArray);
             Console.WriteLine(min);
             TaskExit();
-
         }
 
         public static void TaskExit()
@@ -104,46 +104,297 @@ namespace ConsoleApp15
         public static void Task8(int[] myArray)
         {
 
+            PrintArray(myArray);
+            SwapArrayParts(myArray);
+            PrintArray(myArray);
             TaskExit();
+        }
+
+        private static void SwapArrayParts(int[] myArray)
+        {
+            int firstPartEnd = myArray.Length / 2 ;
+            int step = myArray.Length % 2 == 1 ? firstPartEnd + 1 : firstPartEnd;
+            for (int i = 0; i < firstPartEnd; i++)
+            {
+                Swap(ref myArray[i], ref myArray[i + step]);
+            }
+        }
+
+        private static void Swap(ref int num1, ref int num2)
+        {
+            int tmp = num1;
+            num1 = num2;
+            num2 = tmp;
         }
 
         public static void Task9(int[] myArray)
         {
+            PrintArray(myArray);
+            SortBubble(myArray);
+            PrintArray(myArray);
             TaskExit();
         }
 
-        public static void Task17(int[] myArray)
+        private static void SortBubble(int[] myArray)
         {
-            int step = 2;
-            int startPosition = 4;
-
-            MakeShift(myArray, startPosition, step);
-        }
-
-        private static void MakeShift(int[] myArray, int startPosition, int step)
-        {
-            int endPosition = (startPosition - 1) < 0 ? 0 : startPosition - 1;
-            int temp;
-            //int counter = 0;
-            int currentPosition = startPosition;
-
-            while (currentPosition < myArray.Length)
+            for (int i = 0; i < myArray.Length - 1 ; i++)
             {
-                currentPosition++;
+                for (int j = 0; j < myArray.Length - 1 - i; j++)
+                {
+                    if (myArray[j] > myArray[j+1])
+                    {
+                        Swap(ref myArray[j], ref myArray[j + 1]);
+                    }
+                }
             }
         }
-        private static void MakeShift(int[] myArray, int startPosition)
-        {
-            startPosition = 1;
-            int endPosition = (startPosition - 1) < 0 ? 0 : startPosition - 1;
-            int temp;
-            //int counter = 0;
-            int currentPosition = startPosition;
 
-            while (currentPosition < myArray.Length)
+        public static void Task10(int[] myArray)
+        {
+            PrintArray(myArray);
+            SortSelect(myArray);
+            PrintArray(myArray);
+            TaskExit();
+        }
+
+        private static void SortSelect(int[] myArray)
+        {
+            int[] tmp;
+            for (int i = 0; i < myArray.Length; i++)
             {
-                currentPosition++;
+                tmp = new int[myArray.Length - i];
+                for (int j = 0; j < tmp.Length; j++)
+                {
+                    tmp[j] = myArray[j + i];
+                }
+                int minIndex = FindMinIndex(tmp);
+                Swap(ref myArray[i], ref myArray[i + minIndex]);
             }
+        }
+
+        public static void Task11(int[] myArray)
+        {
+            PrintArray(myArray);
+            SortInsert(myArray);
+            PrintArray(myArray);
+            TaskExit();
+        }
+
+        private static void SortInsert(int[] myArray)
+        {
+            int tmp;
+            int j;
+            for (int i = 0; i < myArray.Length; i++)
+            {
+                tmp = myArray[i];
+                j = i - 1;
+                while ((j >= 0) && (myArray[j ] > tmp))
+                {
+                    myArray[j + 1] = myArray[j];
+                    j = j - 1;
+                }
+                myArray[j + 1] = tmp;
+            }
+        }
+
+        public static void Task12(int[] myArray)
+        {
+            PrintArray(myArray);
+            myArray = SortQuick(myArray);
+            PrintArray(myArray);
+            TaskExit();
+        }
+
+        private static int[] SortQuick(int[] myArray)
+        {
+            return SortQuick(myArray, 0, myArray.Length - 1);
+        }
+
+        private static int[] SortQuick(int[] myArray, int minIndex, int maxIndex)
+        {
+            if (minIndex >= maxIndex)
+            {
+                return myArray;
+            }
+            int pivotIndex = Partition(myArray, minIndex, maxIndex);
+            SortQuick(myArray, minIndex, pivotIndex - 1);
+            SortQuick(myArray, pivotIndex + 1, maxIndex);
+
+            return myArray;
+        }
+
+        private static int Partition(int[] myArray, int minIndex, int maxIndex)
+        {
+            var pivot = minIndex - 1;
+            for (var i = minIndex; i < maxIndex; i++)
+            {
+                if (myArray[i] < myArray[maxIndex])
+                {
+                    pivot++;
+                    Swap(ref myArray[pivot], ref myArray[i]);
+                }
+            }
+
+            pivot++;
+            Swap(ref myArray[pivot], ref myArray[maxIndex]);
+            return pivot;
+        }
+
+        public static void Task13(int[] myArray)
+        {
+            PrintArray(myArray);
+            myArray = MergeSort(myArray);
+            PrintArray(myArray);
+            TaskExit();
+        }
+
+        static void Merge(int[] array, int lowIndex, int middleIndex, int highIndex)
+        {
+            var left = lowIndex;
+            var right = middleIndex + 1;
+            var tempArray = new int[highIndex - lowIndex + 1];
+            var index = 0;
+
+            while ((left <= middleIndex) && (right <= highIndex))
+            {
+                if (array[left] < array[right])
+                {
+                    tempArray[index] = array[left];
+                    left++;
+                }
+                else
+                {
+                    tempArray[index] = array[right];
+                    right++;
+                }
+
+                index++;
+            }
+
+            for (var i = left; i <= middleIndex; i++)
+            {
+                tempArray[index] = array[i];
+                index++;
+            }
+
+            for (var i = right; i <= highIndex; i++)
+            {
+                tempArray[index] = array[i];
+                index++;
+            }
+
+            for (var i = 0; i < tempArray.Length; i++)
+            {
+                array[lowIndex + i] = tempArray[i];
+            }
+        }
+
+        //сортировка слиянием
+        static int[] MergeSort(int[] array, int lowIndex, int highIndex)
+        {
+            if (lowIndex < highIndex)
+            {
+                var middleIndex = (lowIndex + highIndex) / 2;
+                MergeSort(array, lowIndex, middleIndex);
+                MergeSort(array, middleIndex + 1, highIndex);
+                Merge(array, lowIndex, middleIndex, highIndex);
+            }
+
+            return array;
+        }
+
+        static int[] MergeSort(int[] array)
+        {
+            return MergeSort(array, 0, array.Length - 1);
+        }
+        public static void Task14(int[] myArray)
+        {
+            PrintArray(myArray);
+            myArray = ShellSort(myArray);
+            PrintArray(myArray);
+            TaskExit();
+        }
+        static int[] ShellSort(int[] array)
+        {
+            //расстояние между элементами, которые сравниваются
+            var d = array.Length / 2;
+            while (d >= 1)
+            {
+                for (var i = d; i < array.Length; i++)
+                {
+                    var j = i;
+                    while ((j >= d) && (array[j - d] > array[j]))
+                    {
+                        Swap(ref array[j], ref array[j - d]);
+                        j = j - d;
+                    }
+                }
+
+                d = d / 2;
+            }
+
+            return array;
+        }
+        public static void Task15(int[] myArray)
+        {
+            PrintArray(myArray);
+            HeapSort(myArray, myArray.Length);
+            PrintArray(myArray);
+            TaskExit();
+        }
+
+        public static void heapify(int[] arr, int pos, int n)
+        {
+            int temp;
+            while (2 * pos + 1 < n)
+            {
+                int t = 2 * pos + 1; if (2 * pos + 2 < n && arr[2 * pos + 2] >= arr[t])
+                {
+                    t = 2 * pos + 2;
+                }
+                if (arr[pos] < arr[t]) { temp = arr[pos]; arr[pos] = arr[t]; arr[t] = temp; pos = t; } else break;
+            }
+        }
+        public static void heap_make(int[] arr, int n)
+        {
+            for (int i = n - 1; i >= 0; i--)
+            {
+                heapify(arr, i, n);
+            }
+        }
+        public static void HeapSort(int[] arr, int n)
+        {
+            int temp;
+            heap_make(arr, n);
+            while (n > 0)
+            {
+                temp = arr[0];
+                arr[0] = arr[n - 1];
+                arr[n - 1] = temp;
+                n--;
+                heapify(arr, 0, n);
+            }
+        }
+
+        public static void Task16(int[] myArray)
+        {
+            Random random = new Random();
+            int day = random.Next(1, 355);
+            string dayName = GetDayNameByNum(day);
+            Console.WriteLine($"day chosen is dd/mm/yyyy 01/01/2020 + {day} =  {new DateTime(2020, 1, 1).AddDays(day)} ");
+            Console.WriteLine(dayName);
+            TaskExit();
+        }
+
+        private static string GetDayNameByNum(int days)
+        {
+            DateTime calculatedDate = new DateTime(2020, 1, 1);
+            calculatedDate = calculatedDate.AddDays(days);
+
+            string dayName = calculatedDate.DayOfWeek.ToString();
+            Console.WriteLine(calculatedDate.DayOfWeek);
+
+            return dayName;
         }
 
         public static void PrintArray(int[] myArray)
@@ -152,6 +403,11 @@ namespace ConsoleApp15
             {
                 Console.WriteLine($"myArray[{i}] = {myArray[i]}");
             }
+            for (int i = 0; i < myArray.Length; i++)
+            {
+                Console.Write($"{myArray[i]}  ");
+            }
+            Console.WriteLine();
         }
 
         public static int FindSummOddElements(int[] myArray)

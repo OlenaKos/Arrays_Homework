@@ -5,48 +5,19 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 
-namespace ConsoleApp15
+namespace Arrays_Homework
 {
     class Program
     {
         static void Main(string[] args)
         {
-            int n = 10;
-            int[] myArray = Tasks.CreateArray(n);
+            int n = 5;
+            Menu menu = new Menu(n);
 
-            bool flag = true;
-            //Tasks work = new Tasks();
-            Menu menu = new Menu();
-            Type TaskType = typeof(Tasks);
-
-            while (flag)
+            while (menu.IsRun)
             {
-                int MenuNum = menu.SelectMenu(menu.MenuArray()) + 1;
-                string MethodName = "Task" + MenuNum;
-                MethodInfo method = TaskType.GetMethod(MethodName);
-
-                object task = method.Invoke( null, new object[] { myArray });
-                
+                menu.RunSelectedMenu(menu.SelectMenu(Menu.MenuArray()));   
             }
-            
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
-
-
     }
 }

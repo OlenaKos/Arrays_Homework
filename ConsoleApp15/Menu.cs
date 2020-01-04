@@ -3,14 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Reflection;
 
-namespace ConsoleApp15
+namespace Arrays_Homework
 {
     class Menu
     {
         public int Index { get; set; } = 0;
+        public bool IsRun { get; set; } = true;
+        public int[] myArray { get; set; }  = Tasks.CreateArray(10);
 
-        public string[] MenuArray()
+        public Menu(int n)
+        {
+            myArray = Tasks.CreateArray(n);
+        }
+
+        public Menu()
+        {
+        }
+
+        public static string[] MenuArray()
         {
             string[] str = {
                 "1. Find min element" ,
@@ -28,32 +40,49 @@ namespace ConsoleApp15
                 "13. Sort array(Merge)",
                 "14. Sort array(Shell)",
                 "15. Sort array(Heap)",
-                "16. Get name of day of week by day's name",
-                "17. Make a shift by two elements starting from n- element",
-                "18. Exit"
+                "16. Get name of day of week by day's number",
+                "17. Exit"
             };
 
             return str;
         }
+
+        private static string GetMethodName(int menuNum)
+        {
+            string methodName;
+            if (menuNum == Menu.MenuArray().Length)
+            {
+                methodName = "Exit";
+            }
+            else
+            {
+                methodName = "Task" + menuNum;
+            }
+            return methodName;
+        }
+        public void RunSelectedMenu(int MenuNum)
+        {
+            Type TaskType = typeof(Tasks);
+            string MethodName = GetMethodName(MenuNum);
+            if (MethodName == "Exit")
+            {
+                IsRun = false;
+            }
+            else
+            {
+                MethodInfo method = TaskType.GetMethod(MethodName);
+                object task = method.Invoke(null, new object[] { myArray });
+            }
+        }
+
         public int SelectMenu(string[] MenuItem)
         {
             bool flag = true;
 
             while (flag)
             {
-                for (int i = 0; i < MenuItem.Length; i++)
-                {
-                    if (i == Index)
-                    {
-                        WriteFullLine($"****{MenuItem[i]}*****", ConsoleColor.Yellow, ConsoleColor.Magenta);
-                    }
-                    else
-                    {
-                        WriteFullLine($"{MenuItem[i]}", ConsoleColor.White, ConsoleColor.Blue);
-                    }
-                    Console.ResetColor();
-                } 
-                
+
+                PrintMenu(Index);
                 ConsoleKeyInfo ckey = Console.ReadKey(); // waiting for the managing keys 
 
                 if (ckey.Key == ConsoleKey.DownArrow)
@@ -85,17 +114,34 @@ namespace ConsoleApp15
                 {
                     Console.Clear();
                     WriteFullLine($"****{MenuItem[Index]}*****", ConsoleColor.Yellow, ConsoleColor.Magenta);
-                    //Console.WriteLine(MenuArray()[Index]);
                     Console.ResetColor();
-                    return Index;
+                    break;
                 }
-
-                Console.Clear();
+                Console.SetCursorPosition(0, 0);
 
             }
+            Index++;
             return Index;
         }
 
+        public static void PrintMenu(int Index)
+        {
+            string[] MenuItem = MenuArray();
+
+            for (int i = 0; i < MenuItem.Length; i++)
+            {
+                if (i == Index)
+                {
+                    WriteFullLine($"****{MenuItem[i]}*****", ConsoleColor.Yellow, ConsoleColor.Magenta);
+                }
+                else
+                {
+                    WriteFullLine($"{MenuItem[i]}", ConsoleColor.White, ConsoleColor.Blue);
+                }
+                Console.ResetColor();
+            }
+
+        }
         public static void WriteFullLine(string str, ConsoleColor backgroundColor = ConsoleColor.Green, ConsoleColor foregroundColor = ConsoleColor.DarkGreen)
         {
             //
